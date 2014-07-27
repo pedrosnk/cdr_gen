@@ -1,7 +1,7 @@
 defmodule Model.Cdr do
 
-  defstruct incomming_call: "234567", outcome_call: "31234551", 
-      time_started: 1406289496351, time_ended:  1406289496352, 
-      cell_id: 'BR124351SP', cdr_id: 'generated_id'
+  defstruct incoming_call: "", outcome_call: "", 
+      time_started: 1, time_ended:  2, 
+      cell_id: '', cdr_id: ''
 
 end

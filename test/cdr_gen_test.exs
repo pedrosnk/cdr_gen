@@ -1,7 +1,7 @@
 defmodule CdrGenTest do
   use ExUnit.Case
 
-  @cdr_fields [:incomming_call, :outcome_call, :time_started, :time_ended, :cell_id, :cdr_id]
+  @cdr_fields [:incoming_call, :outcome_call, :time_started, :time_ended, :cell_id, :cdr_id]
 
   test "generate a single cdr" do
     cdr = CdrGen.generate_cdr
