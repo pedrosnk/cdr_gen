@@ -20,3 +20,11 @@ use Mix.Config
 # here (which is why it is important to import them last).
 #
 #     import_config "#{Mix.env}.exs"
+[pooler: [pools: [
+  [ name: :riaklocal,
+    group: :riak,
+    max_count: 10,
+    init_count: 5,
+    start_mfa: {Riex.Connection, :start_link, ['172.30.1.118', 8087]}
+  ]
+]]]

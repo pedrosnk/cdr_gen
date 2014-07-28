@@ -28,3 +28,4 @@ defmodule CdrGenTest do
     assert msg == :ok
   end
 end
+

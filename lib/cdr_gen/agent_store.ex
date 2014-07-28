@@ -8,13 +8,13 @@ defmodule CdrGen.AgentStore do
   returning a list of items to
   """
   def list agent_name, generator do
-    case Agent.start_link(fn -> [] end, name: :phone_numbers) do
+    case Agent.start_link(fn -> [] end, name: agent_name) do
       {:ok, _pid} ->
         phones = generator.()
-        Agent.update :phone_numbers, fn(_) -> phones end
+        Agent.update agent_name, fn(_) -> phones end
         phones
       {:error, _reason_pid} ->
-        Agent.get :phone_numbers,  &(&1)
+        Agent.get agent_name, &(&1)
     end
   end
 
