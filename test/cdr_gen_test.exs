@@ -22,4 +22,9 @@ defmodule CdrGenTest do
     assert cdrs_size == 50
   end
 
+  test "inserts generated cdr into a riak database" do
+    cdr = CdrGen.generate_cdr
+    {msg, _} = CdrGen.insert_into_database cdr
+    assert msg == :ok
+  end
 end
