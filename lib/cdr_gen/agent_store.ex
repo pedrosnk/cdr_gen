@@ -1,4 +1,4 @@
-defmodule AgentStore do
+defmodule CdrGen.AgentStore do
   @moduledoc """
   This module will encapsulate mostly common functions
   used by the cdr fields in order to store, and retrieve for the Agents

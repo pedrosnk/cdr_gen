@@ -14,7 +14,7 @@ defmodule CdrGenTest do
     cdr = CdrGen.generate_cdr
     assert (cdr.time_ended - cdr.time_started) > 0
   end
-  
+
   test "generate many given cdrs" do
     cdrs_size = CdrGen.generate_cdrs(%{size: 50})
       |> Enum.uniq

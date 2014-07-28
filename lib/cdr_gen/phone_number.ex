@@ -1,8 +1,8 @@
-defmodule PhoneNumber do
+defmodule CdrGen.PhoneNumber do
   @moduledoc """
   Module responsile to generate and add phone numbers
   """
-  import AgentStore
+  import CdrGen.AgentStore
 
   @doc """
   returning a random phone number based on the phone number list that was created

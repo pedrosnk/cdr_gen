@@ -3,4 +3,5 @@
   "riak-erlang-client": {:git, "git://github.com/basho/riak-erlang-client.git", "f763089b5a3b1ca497d03e23dfc37f0ba4e92d07", []},
   "riak_pb": {:git, "git://github.com/basho/riak_pb.git", "fc18a9b37170431f659e08d66ed78e3f6bbc47ca", []},
   "riakc": {:git, "git://github.com/basho/riak-erlang-client.git", "f763089b5a3b1ca497d03e23dfc37f0ba4e92d07", []},
-  "riakclient": {:git, "git://github.com/basho/riak-erlang-client.git", "f763089b5a3b1ca497d03e23dfc37f0ba4e92d07", []}}
+  "riakclient": {:git, "git://github.com/basho/riak-erlang-client.git", "f763089b5a3b1ca497d03e23dfc37f0ba4e92d07", []},
+  "timex": {:package, "0.10.1"}}
