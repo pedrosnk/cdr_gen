@@ -1,7 +1,8 @@
 defmodule CdrGenTest do
   use ExUnit.Case
 
-  @cdr_fields [:incoming_call, :outcome_call, :time_started, :time_ended, :cell_id, :cdr_id]
+  @cdr_fields [:"incoming-call", :"outcome-call", :"time-started", 
+    :"time-ended", :"cell-id", :"cdr-id"]
 
   test "generate a single cdr" do
     cdr = CdrGen.generate_cdr
@@ -12,7 +13,7 @@ defmodule CdrGenTest do
 
   test "timestamp generated must be greater than 0" do
     cdr = CdrGen.generate_cdr
-    assert (cdr.time_ended - cdr.time_started) > 0
+    assert (Map.get(cdr, :"time-ended") - Map.get(cdr, :"time-started")) > 0
   end
 
   test "generate many given cdrs" do
@@ -24,8 +25,14 @@ defmodule CdrGenTest do
 
   test "inserts generated cdr into a riak database" do
     cdr = CdrGen.generate_cdr
-    {msg, _} = CdrGen.insert_into_database cdr
-    assert msg == :ok
+    o = CdrGen.insert_into_database cdr
+    assert o
+  end
+
+  test "isnert generated cdrs into a riak database by chunks" do
+    # test if will execute witout errors
+    cdrs = CdrGen.generate_cdrs %{size: 10}
+    CdrGen.insert_by_chunks cdrs
   end
 end
 

@@ -18,7 +18,7 @@ defmodule CdrGen.CallTime do
     secs_end = Timex.Date.to_secs end_date
     time_started = random_in_interval secs_begin, secs_end
     duration = random_in_interval 10, 600 # 10 seconds to 10 minutes
-    %{ time_started: time_started, time_ended: time_started + duration  }
+    %{ "time-started": time_started, "time-ended": time_started + duration  }
   end
 
   defp random_in_interval min, max do

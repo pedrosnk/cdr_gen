@@ -4,7 +4,7 @@ defmodule CdrGen.Mixfile do
   def project do
     [app: :cdr_gen,
      version: "0.0.1",
-     elixir: "~> 0.14.3",
+     elixir: "0.15.0-dev",
      deps: deps]
   end
 

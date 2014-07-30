@@ -2,9 +2,9 @@ defmodule CdrGen.Cdr do
   @moduledoc """
   Model of the CDR
   """
-  defstruct incoming_call: "", outcome_call: "",
-      time_started: 1, time_ended:  2,
-      cell_id: "", cdr_id: ""
+  defstruct "incoming-call": "", "outcome-call": "",
+      "time-started": 1, "time-ended":  2,
+      "cell-id": "", "cdr-id": ""
 
 end
 
