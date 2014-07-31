@@ -2,6 +2,6 @@
 /deps
 erl_crash.dump
 *.ez
-
+log
 *.swo
 *.swp

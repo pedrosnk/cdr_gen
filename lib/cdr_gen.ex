@@ -1,11 +1,12 @@
 defmodule CdrGen do
   @moduledoc """
   CdrGen is the main Class of the application. It is to interface with other
-  modules of hte application to call its functionality
+  module of hte application to call its functionality
   """
 
-  #@riak_ips ['172.30.1.118','172.30.1.17','172.30.1.109']
-  @riak_ips ['172.30.1.118']
+  @riak_ips ['172.30.1.118','172.30.1.17','172.30.1.109']
+  @pool_size 18
+  #@riak_ips ['172.30.1.118']
 
   @doc """
   Function responsible to generate a single
@@ -28,7 +29,7 @@ defmodule CdrGen do
   """
   def generate_cdrs options do
     options = Map.merge %{ size: 10 }, options
-    Enum.map 1..options[:size], fn(_) -> generate_cdr end
+    Enum.map 1..options[:size], fn(_) -> generate_cdr |> cdr_to_json end
   end
 
   def small_profile cdrs, riak_ip do
@@ -52,7 +53,7 @@ defmodule CdrGen do
   insert cdrs into a dataa
   """
   def insert_by_chunks cdrs do
-    chuck_size = Enum.count(cdrs) / 5 |> Float.floor |> round
+    chuck_size = Enum.count(cdrs) / @pool_size |> Float.floor |> round
     cdrs |> Enum.chunk(chuck_size)
          |> Enum.with_index
          |> Enum.each(fn(chunk_with_index) -> 
@@ -70,8 +71,7 @@ defmodule CdrGen do
     temp_id = round( :random.uniform * 1_000)
     IO.puts "###{temp_id} start inserting at #{riak_ip}"
     Enum.each cdrs, fn(cdr) ->
-      {:ok, json} = JSEX.encode cdr
-      r_obj = Riex.Object.create bucket: "cdr", data: json
+      r_obj = Riex.Object.create bucket: "cdr", data: cdr
       Riex.put pid, r_obj
     end
     IO.puts "###{temp_id} finish inserting at #{riak_ip}"
@@ -83,6 +83,14 @@ defmodule CdrGen do
   def start_insert cdrs_size do
     cdrs = generate_cdrs %{size: cdrs_size}
     insert_by_chunks cdrs
+  end
+
+  defp cdr_to_json cdr do
+    "{\"incoming-call\": \"#{Map.get(cdr, :"incoming-call")}\", " <>
+    "\"outcome-call\": \"#{Map.get(cdr, :"outcome-call")}\", " <>
+    "\"time-started\": #{Map.get(cdr, :"time-started")}, " <>
+    "\"time-ended\": #{Map.get(cdr, :"time-ended")}, " <>
+    "\"cell-id\": \"#{Map.get(cdr, :"cell-id")}\" }"
   end
 
 end
