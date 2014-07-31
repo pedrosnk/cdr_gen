@@ -4,6 +4,7 @@
   "jsx": {:package, "2.0.4"},
   "lager": {:git, "https://github.com/basho/lager.git", "dd267603e93e8babe9ef9164fc176b430d669431", []},
   "meck": {:git, "git://github.com/basho/meck.git", "d4730c6d47e437b1dcd170551506e7b10596cd5a", [tag: "0.8.1p1"]},
+  "parallel": {:git, "git://github.com/eproxus/parallel.git", "3b628c5425e0f9ff6c786e726bda9cc3d69da326", []},
   "pooler": {:git, "git://github.com/seth/pooler.git", "fee0aa40a0b99fadacae349bb6a6924dc2d3fa4a", []},
   "protobuffs": {:git, "git://github.com/basho/erlang_protobuffs.git", "5257dfe4e000b58487af89b849c7336ffa9bae82", [tag: "0.8.1p4"]},
   "riak-erlang-client": {:git, "git://github.com/basho/riak-erlang-client.git", "f763089b5a3b1ca497d03e23dfc37f0ba4e92d07", []},

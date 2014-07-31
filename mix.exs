@@ -27,6 +27,6 @@ defmodule CdrGen.Mixfile do
   defp deps do
     [ { :riex, github: "edgurgel/riex" },
       { :jsex, github: "talentdeficit/jsex"},
-      { :timex, "~> 0.10.1" }]
+      { :timex, "~> 0.10.1" } ]
   end
 end

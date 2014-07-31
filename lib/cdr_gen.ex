@@ -6,6 +6,7 @@ defmodule CdrGen do
 
   @riak_ips ['172.30.1.118','172.30.1.17','172.30.1.109']
   @pool_size 18
+  @cdr_generation_procs 8
   #@riak_ips ['172.30.1.118']
 
   @doc """
@@ -15,7 +16,7 @@ defmodule CdrGen do
   def generate_cdr do
     time_generated_cdr_begin = Timex.Date.from {2013, 06, 01}
     time_generated_cdr_end = Timex.Date.from {2013, 07, 01}
-    cdr = %CdrGen.Cdr{ "incoming-call": CdrGen.PhoneNumber.get_random, 
+    cdr = %CdrGen.Cdr{ "incoming-call": CdrGen.PhoneNumber.get_random,
                        "outcome-call": CdrGen.PhoneNumber.get_random,
                        "cell-id": CdrGen.CellId.get_random }
     Map.merge cdr, CdrGen.CallTime.get_random_time(time_generated_cdr_begin, time_generated_cdr_end)
@@ -29,7 +30,11 @@ defmodule CdrGen do
   """
   def generate_cdrs options do
     options = Map.merge %{ size: 10 }, options
-    Enum.map 1..options[:size], fn(_) -> generate_cdr |> cdr_to_json end
+    generate_cdr # dont known Y but is necessary to generate phone list
+    {max_range, remainder} = divide_equals_parts options[:size], @cdr_generation_procs
+    Enum.map(1..@cdr_generation_procs, fn(_) -> tasks_generate_cdr(max_range) end )
+      |> Enum.concat([tasks_generate_cdr(remainder)])
+      |> Enum.flat_map(&Task.await(&1, 100_000_000))
   end
 
   def small_profile cdrs, riak_ip do
@@ -56,14 +61,17 @@ defmodule CdrGen do
     chuck_size = Enum.count(cdrs) / @pool_size |> Float.floor |> round
     cdrs |> Enum.chunk(chuck_size)
          |> Enum.with_index
-         |> Enum.each(fn(chunk_with_index) -> 
+         |> Enum.each(fn(chunk_with_index) ->
            {chunk, index} = chunk_with_index
            riak_ip_index = rem index, Enum.count(@riak_ips)
            riak_ip = Enum.at @riak_ips, riak_ip_index
-           spawn_link CdrGen, :small_profile, [chunk, riak_ip] 
+           spawn_link CdrGen, :small_profile, [chunk, riak_ip]
          end )
   end
 
+  @doc """
+  Insert a list of cdr directly into a riak instance by creating a connection by a given ip
+  """
   def insert_list cdrs, riak_ip do
     {:ok, pid} = Riex.Connection.start_link riak_ip, 8087
     {t1, t2, t3} = :erlang.now
@@ -85,6 +93,12 @@ defmodule CdrGen do
     insert_by_chunks cdrs
   end
 
+  def divide_equals_parts total, num do
+    max_range = div total, num
+    remainder = rem total, num
+    {max_range, remainder}
+  end
+
   defp cdr_to_json cdr do
     "{\"incoming-call\": \"#{Map.get(cdr, :"incoming-call")}\", " <>
     "\"outcome-call\": \"#{Map.get(cdr, :"outcome-call")}\", " <>
@@ -92,6 +106,17 @@ defmodule CdrGen do
     "\"time-ended\": #{Map.get(cdr, :"time-ended")}, " <>
     "\"cell-id\": \"#{Map.get(cdr, :"cell-id")}\" }"
   end
+
+  defp tasks_generate_cdr size do
+    Task.async fn ->
+      if size == 0 do
+        []
+      else
+        Enum.map 1..size, fn(_) -> generate_cdr |> cdr_to_json end
+      end
+    end
+  end
+
 
 end
 
